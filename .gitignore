@@ -1,3 +1,3 @@
-./build
-./Logs
-./recovery
+build/
+Logs/
+recovery/
