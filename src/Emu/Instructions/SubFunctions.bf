@@ -39,7 +39,7 @@ namespace BeefBoy.Emu.Instructions
 
 		public static void sub_n(uint8 param, uint16 param2)
 		{
-
+			Utils.sub(param);
 		}
 	}
 }

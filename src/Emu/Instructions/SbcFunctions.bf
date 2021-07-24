@@ -40,7 +40,7 @@ namespace BeefBoy.Emu.Instructions
 
 		public static void sbc_n(uint8 param, uint16 param2)
 		{
-
+			Utils.sbc(cpu.RAM[param]);
 		}
 	}
 }

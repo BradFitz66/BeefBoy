@@ -13,7 +13,8 @@ namespace BeefBoy.Emu
 		{
 		}
 
-		public uint8 this[int i]
+		//It isn't probably good practice to use an indexer in this context, but I think it's easier than writing cpu.RAM.read_byte/cpu.RAM.write_byte over and over.
+		public uint8 this[uint16 i]
 		{
 			get { return read_byte(uint16(i)); }
 			set { write_byte(uint16(i), value); }
@@ -56,12 +57,10 @@ namespace BeefBoy.Emu
 		}
 
 		public uint16 read_short(uint16 address){
-			//So we can do adrs++.
 			return RAM[address] | ((uint16)RAM[address+1]<<8);
 		}
 
-		public uint16 read_short_from_stack(uint16 address){
-			//So we can do adrs++.
+		public uint16 read_short_from_stack(){
 			uint16 val=read_short(cpu.registers.sp);
 			cpu.registers.sp+=2;
 

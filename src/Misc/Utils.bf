@@ -18,6 +18,23 @@ public static class Utils
 		setFlags(z,n,hc,c);
 	}
 
+	public static void cp(uint8 value){
+		uint8 z,n,hc,c;
+		z=0;
+		n=0;
+		hc=0;
+		c=0;
+		if(cpu.registers.a == value)z=1;
+
+		if(value>cpu.registers.a)c=1;
+
+		if(value & 0x0f>cpu.registers.a & 0x0f)hc=1;
+
+		n=1;
+
+		setFlags(z,n,hc,c);
+	}
+
 	public static void bit(uint8 pos, uint16 register){
 		uint8 z,n,hc,c=0;
 		z=getBit(register,pos)==0 ? 1 : 0;
@@ -64,14 +81,32 @@ public static class Utils
 		setFlags(z, n, hc, c);
 	}
 
+	public static void add(ref uint16 destination, uint16 value){
+		uint16 result = destination+value;
+		uint8 z,n,hc,c;
+		z=getBit(cpu.registers.flags,7);
+		n=0;
+		hc=0;
+		c=0;
+		if(result & 0xffff0000==1){
+			c=1;
+		}
+
+		destination=(result & 0xffff);
+		if(((destination&0x0f)+(value&0x0f))>0x0f)
+			hc=1;
+
+		setFlags(z,n,hc,c);
+	}
+
 	public static void dec(ref uint8 register){
-		register++;
+		register--;
 
 
 		uint8 z,n,hc,c=0;
 
 		z = register > 0 ? 0 : 1;
-		n = 0;
+		n = 1;
 		hc = (register & 0x0F)>0 ? 0 : 1;
 		c=getBit(cpu.registers.flags,4);
 		setFlags(z,n,hc,c);
