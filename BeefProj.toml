@@ -1,0 +1,6 @@
+FileVersion = 1
+Dependencies = {corlib = "*", CowieCLI = "*", "Atma.Json" = "*"}
+
+[Project]
+Name = "BeefBoy"
+StartupObject = "BeefBoy.Program"

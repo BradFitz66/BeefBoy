@@ -1,0 +1,9 @@
+FileVersion = 1
+Projects = {BeefBoy = {Path = "."}, CowieCLI = "*", "Atma.Json" = "*"}
+Unlocked = ["CowieCLI"]
+
+[Workspace]
+StartupProject = "BeefBoy"
+
+[Configs.Debug.Win64]
+ConfigSelections = {CowieCLI = {Platform = "Win32"}}

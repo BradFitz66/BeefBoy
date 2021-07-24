@@ -1,0 +1,3 @@
+C:\Beef\BeefBoyRewrite\build\Debug_Win64\BeefBoy
+
+beefboy loadrom -d -p C:\Beef\BeefBoyRewrite\src\Data\dmg0_boot.bin
