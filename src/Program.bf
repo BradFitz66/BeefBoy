@@ -70,7 +70,7 @@ namespace BeefBoy
 				return;
 			}
 
-			cpu.RAM.load_ROM(rom,ROMPath.Contains("boot"));
+			cpu.RAM.load_ROM(rom);
 			delete (ROMData.Value);
 		}
 	}

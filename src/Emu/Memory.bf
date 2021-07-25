@@ -80,8 +80,9 @@ namespace BeefBoy.Emu
 
 		public void load_ROM(uint8[] romData)
 		{
+			Console.WriteLine(romData.Count);
 			//Do not load bootrom currently. Will error.
-			for (uint16 i = rom_bank_0_begin; i < (rom_bank_n_end - rom_bank_0_begin + 1); i++)
+			for (uint16 i = rom_bank_0_begin; i < rom_bank_n_end; i++)
 			{
 				this[i] = romData[i];
 			}

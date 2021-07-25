@@ -375,18 +375,16 @@ namespace BeefBoy.Emu
 			if (instructions[i].operandLength == 1) operand = (uint16)cpu.RAM[registers.pc];
 			else if (instructions[i].operandLength == 2) operand = cpu.RAM.read_short(registers.pc);
 
-			//Don't log NOP commands.
-			if (i != 0xCB && i!=0x0000)
+			if (i != 0xCB)
 				Log(scope $"Running instruction {instructions[i].disassembly} (0x{i:x4}) with operand {operand:x4} @ PC = 0x{cpu.registers.pc-1:x4}\n");
 
 
-			if(i!=0x0000){
-				String RegisterString=scope $"a = 0x{registers.a:x2} b = 0x{registers.b:x2} c = 0x{registers.c:x2} d = 0x{registers.d:x2} e = 0x{registers.e:x2} h = 0x{registers.h:x2} l = 0x{registers.l:x2} af = 0x{registers.af:x4} bc = 0x{registers.bc:x4} de = 0x{registers.de:x4} hl = 0x{registers.hl:x4} sp = 0x{registers.sp:x4}\n";
-				String Flags=scope $"z = {Utils.getBit(cpu.registers.flags,7)} s = {Utils.getBit(cpu.registers.flags,6)} hc = {Utils.getBit(cpu.registers.flags,5)} c = {Utils.getBit(cpu.registers.flags,4)}\n\n";
+			String RegisterString=scope $"a = 0x{registers.a:x2} b = 0x{registers.b:x2} c = 0x{registers.c:x2} d = 0x{registers.d:x2} e = 0x{registers.e:x2} h = 0x{registers.h:x2} l = 0x{registers.l:x2} af = 0x{registers.af:x4} bc = 0x{registers.bc:x4} de = 0x{registers.de:x4} hl = 0x{registers.hl:x4} sp = 0x{registers.sp:x4}\n";
+			String Flags=scope $"z = {Utils.getBit(cpu.registers.flags,7)} s = {Utils.getBit(cpu.registers.flags,6)} hc = {Utils.getBit(cpu.registers.flags,5)} c = {Utils.getBit(cpu.registers.flags,4)}\n\n";
 
-				Log(RegisterString);
-				Log(Flags);
-			}
+			Log(RegisterString);
+			Log(Flags);
+			
 
 			registers.pc += instructions[i].operandLength;
 
