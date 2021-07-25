@@ -1,7 +1,7 @@
 FileVersion = 1
 LastConfig = "Debug"
 LastPlatform = "Win64"
-RecentFilesList = ["src\\Emu\\CPU.bf", "src\\Emu\\Memory.bf", "src\\Program.bf", "src\\Emu\\Instructions\\JumpFunctions.bf"]
+RecentFilesList = ["src\\Emu\\Memory.bf", "src\\Emu\\CPU.bf", "src\\CLICommands\\CLICommands.bf", "src\\Program.bf", "src\\Emu\\Instructions\\JumpFunctions.bf"]
 
 [MainWindow]
 X = 483
@@ -42,12 +42,22 @@ DefaultDocumentsTabbedView = true
 Type = "TabbedView"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
+TabLabel = "CLICommands.bf"
+TabWidth = 138.6793
+Type = "SourceViewPanel"
+FilePath = "src\\CLICommands\\CLICommands.bf"
+CursorPos = 1287
+VertPos = 336.0
+ProjectName = "BeefBoy"
+
+[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
+Active = true
 TabLabel = "Memory.bf"
 TabWidth = 102.8302
 Type = "SourceViewPanel"
 FilePath = "src\\Emu\\Memory.bf"
-CursorPos = 2300
-VertPos = 1056.0
+CursorPos = 2859
+VertPos = 816.0
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
@@ -55,18 +65,16 @@ TabLabel = "Program.bf"
 TabWidth = 103.7736
 Type = "SourceViewPanel"
 FilePath = "src\\Program.bf"
-CursorPos = 2294
-VertPos = 672.0
+CursorPos = 2211
+VertPos = 624.0
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-Active = true
 TabLabel = "CPU.bf"
 TabWidth = 79.24529
 Type = "SourceViewPanel"
 FilePath = "src\\Emu\\CPU.bf"
-CursorPos = 22954
-VertPos = 5808.0
+CursorPos = 23660
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]

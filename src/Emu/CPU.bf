@@ -25,7 +25,7 @@ namespace BeefBoy.Emu
 
 		public uint8 flags=0xB0;
 		public uint16 sp=0xFFFE;
-		public uint16 pc=0x000;
+		public uint16 pc=0x100;
 		public uint16 af
 		{
 			get { return (uint16)a << 8 | flags; }
@@ -206,7 +206,7 @@ namespace BeefBoy.Emu
 			.("LD .(HL), E"          , (uint8)0, => LoadFunctions         .ld_hl_e    ),
 			.("LD .(HL), H"          , (uint8)0, => LoadFunctions         .ld_hl_h    ),
 			.("LD .(HL), L"          , (uint8)0, => LoadFunctions         .ld_hl_l    ),
-			.("HALT"                 , (uint8)0, => MiscellaneousFunctions  .halt       ),
+			.("HALT"                 , (uint8)0, => MiscellaneousFunctions.halt       ),
 			.("LD .(HL), A"          , (uint8)0, => LoadFunctions         .ld_hl_a    ),
 			.("LD A, B"              , (uint8)0, => LoadFunctions         .ld_a_b     ),
 			.("LD A, C"              , (uint8)0, => LoadFunctions         .ld_a_c     ),
