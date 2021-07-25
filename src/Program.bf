@@ -62,8 +62,6 @@ namespace BeefBoy
 
 		public static void loadROM(String ROMPath)
 		{
-
-			//bus.bootROM=.();
 			uint8[] rom;
 			Result<uint8[]> ROMData = ReadAllBytes((ROMPath));
 			rom = ROMData.Value;
@@ -71,10 +69,8 @@ namespace BeefBoy
 				Console.WriteLine("ROM is empty!"); 
 				return;
 			}
-			for (uint16 i = 0x000; i < rom.Count; i++)
-			{
-				cpu.RAM[i] = rom[i];
-			}
+
+			cpu.RAM.load_ROM(rom,ROMPath.Contains("boot"));
 			delete (ROMData.Value);
 		}
 	}

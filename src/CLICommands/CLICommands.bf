@@ -48,7 +48,7 @@ namespace BeefBoy.CLICommands
 		public override int Execute()
 		{
 			Console.WriteLine(scope $"Loading ROM from {Path}. Press ESC to stop.");
-
+			loadROM(@"c:\Beef\BeefBoyRewrite\src\Data\dmg_boot.bin");
 			loadROM(Path);
 
 			if(Debug){

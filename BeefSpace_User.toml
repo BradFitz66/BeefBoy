@@ -1,7 +1,7 @@
 FileVersion = 1
 LastConfig = "Debug"
 LastPlatform = "Win64"
-RecentFilesList = ["src\\Emu\\Memory.bf", "src\\Misc\\Utils.bf", "src\\Emu\\Instructions\\CompareFunctions.bf", "src\\Emu\\Instructions\\AddFunctions.bf", "src\\Emu\\Instructions\\SubFunctions.bf", "src\\Emu\\Instructions\\SbcFunctions.bf", "src\\Emu\\Instructions\\StackFunctions.bf", "src\\Emu\\Instructions\\BitwiseFunctions.bf", "src\\Emu\\CB.bf", "src\\Emu\\CPU.bf", "src\\Emu\\Instructions\\MiscellaneousFunctions.bf", "src\\Emu\\Instructions\\JumpFunctions.bf", "Disassembly", "src\\Program.bf", "src\\Emu\\Instructions\\Prefixed\\SetFunctions.bf", "src\\Emu\\Instructions\\LoadFunctions.bf", "src\\Emu\\Instructions\\Prefixed\\BitFunctions.bf", "d:\\A01\\_work\\6\\s\\src\\vctools\\crt\\vcruntime\\src\\string\\amd64\\memcpy.asm", "c:\\Program Files\\BeefLang\\BeefLibs\\corlib\\src\\NumberFormatter.bf", "src\\Emu\\Instructions\\CallFunctions.bf"]
+RecentFilesList = ["src\\Emu\\Memory.bf", "src\\Program.bf", "src\\Emu\\CPU.bf", "src\\Emu\\Instructions\\JumpFunctions.bf"]
 
 [MainWindow]
 X = 483
@@ -29,7 +29,7 @@ Type = "TabbedView"
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
 Active = true
 TabLabel = "Workspace"
-TabWidth = 112.037
+TabWidth = 113.2076
 Type = "ProjectPanel"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets]]
@@ -42,242 +42,39 @@ DefaultDocumentsTabbedView = true
 Type = "TabbedView"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "StackFunctions.bf"
-TabWidth = 137.963
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\StackFunctions.bf"
-CursorPos = 1015
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "CompareFunctions.bf"
-TabWidth = 160.1852
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\CompareFunctions.bf"
-CursorPos = 138
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "Disassembly"
-TabWidth = 109.2593
-Type = "DisassemblyPanel"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "memcpy.asm"
-TabWidth = 113.8889
-Type = "SourceViewPanel"
-FilePath = "d:\\A01\\_work\\6\\s\\src\\vctools\\crt\\vcruntime\\src\\string\\amd64\\memcpy.asm"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "NumberFormatter.bf"
-TabWidth = 155.5555
-Type = "SourceViewPanel"
-FilePath = "c:\\Program Files\\BeefLang\\BeefLibs\\corlib\\src\\NumberFormatter.bf"
-CursorPos = 88797
-VertPos = 28896.0
-ProjectName = "corlib"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "RstFunctions.bf"
-TabWidth = 125.9259
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\RstFunctions.bf"
-CursorPos = 213
-VertPos = 240.0
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "CallFunctions.bf"
-TabWidth = 128.7037
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\CallFunctions.bf"
-CursorPos = 1030
-VertPos = 42.15997
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "CLICommands.bf"
-TabWidth = 137.037
-Type = "SourceViewPanel"
-FilePath = "src\\CLICommands\\CLICommands.bf"
-CursorPos = 1284
-VertPos = 336.0
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "Extensions.bf"
-TabWidth = 112.963
-Type = "SourceViewPanel"
-FilePath = "c:\\Program Files\\BeefLang\\BeefLibs\\CowieCLI-master\\src\\Extensions.bf"
-CursorPos = 589
-ProjectName = "CowieCLI"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
 Active = true
 TabLabel = "Memory.bf"
-TabWidth = 101.8518
+TabWidth = 102.8302
 Type = "SourceViewPanel"
 FilePath = "src\\Emu\\Memory.bf"
-CursorPos = 397
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "SubFunctions.bf"
-TabWidth = 129.6296
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\SubFunctions.bf"
-CursorPos = 951
-VertPos = 74.15997
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "SbcFunctions.bf"
-TabWidth = 127.7778
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\SbcFunctions.bf"
-CursorPos = 950
-VertPos = 96.0
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "BitwiseFunctions.bf"
-TabWidth = 147.2222
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\BitwiseFunctions.bf"
-CursorPos = 2872
-VertPos = 1274.16
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "AdcFunctions.bf"
-TabWidth = 129.6296
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\AdcFunctions.bf"
-CursorPos = 897
-VertPos = 106.16
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "JumpFunctions.bf"
-TabWidth = 138.8889
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\JumpFunctions.bf"
-CursorPos = 2352
-VertPos = 1408.0
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "SwapFunctions.bf"
-TabWidth = 137.963
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\Prefixed\\SwapFunctions.bf"
-CursorPos = 514
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "IncDecFunctions.bf"
-TabWidth = 146.2963
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\IncDecFunctions.bf"
-CursorPos = 2204
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "AddFunctions.bf"
-TabWidth = 131.4815
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\AddFunctions.bf"
-CursorPos = 2185
-VertPos = 826.16
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "BitFunctions.bf"
-TabWidth = 123.1481
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\Prefixed\\BitFunctions.bf"
-CursorPos = 6436
-VertPos = 3552.0
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "ResFunctions.bf"
-TabWidth = 127.7778
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\Prefixed\\ResFunctions.bf"
-CursorPos = 1815
-VertPos = 442.1599
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "BitShiftFunctions.bf"
-TabWidth = 148.1481
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\Prefixed\\BitShiftFunctions.bf"
-CursorPos = 4553
-VertPos = 2272.0
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "SetFunctions.bf"
-TabWidth = 125.9259
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\Prefixed\\SetFunctions.bf"
-CursorPos = 1746
-VertPos = 512.0
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "LoadFunctions.bf"
-TabWidth = 136.1111
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\LoadFunctions.bf"
-CursorPos = 7137
-VertPos = 2112.0
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "CB.bf"
-TabWidth = 59.62963
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\CB.bf"
-CursorPos = 16700
-VertPos = 3952.0
+CursorPos = 74
+VertPos = 624.0
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
 TabLabel = "Program.bf"
-TabWidth = 92.96296
+TabWidth = 103.7736
 Type = "SourceViewPanel"
 FilePath = "src\\Program.bf"
-CursorPos = 2816
-VertPos = 1360.0
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "Utils.bf"
-TabWidth = 68.88889
-Type = "SourceViewPanel"
-FilePath = "src\\Misc\\Utils.bf"
-CursorPos = 931
-ProjectName = "BeefBoy"
-
-[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
-TabLabel = "MiscellaneousFunctions.bf"
-TabWidth = 187.037
-Type = "SourceViewPanel"
-FilePath = "src\\Emu\\Instructions\\MiscellaneousFunctions.bf"
-CursorPos = 701
-VertPos = 48.0
+CursorPos = 2294
+VertPos = 672.0
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
 TabLabel = "CPU.bf"
-TabWidth = 68.88889
+TabWidth = 79.24529
 Type = "SourceViewPanel"
 FilePath = "src\\Emu\\CPU.bf"
-CursorPos = 22897
-VertPos = 5856.0
+CursorPos = 478
+ProjectName = "BeefBoy"
+
+[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
+TabLabel = "JumpFunctions.bf"
+TabWidth = 130.9434
+Type = "SourceViewPanel"
+FilePath = "src\\Emu\\Instructions\\JumpFunctions.bf"
+CursorPos = 2867
+VertPos = 352.0
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets]]
@@ -287,51 +84,51 @@ Type = "TabbedView"
 
 [[MainDockingFrame.DockedWidgets.Tabs]]
 TabLabel = "Breakpoints"
-TabWidth = 116.6667
+TabWidth = 117.9245
 Type = "BreakpointPanel"
 
 [[MainDockingFrame.DockedWidgets.Tabs]]
 TabLabel = "Find Results"
-TabWidth = 117.5926
+TabWidth = 118.8679
 Type = "FindResultsPanel"
 
 [[MainDockingFrame.DockedWidgets.Tabs]]
 TabLabel = "Threads"
-TabWidth = 94.44444
+TabWidth = 95.28303
 Type = "ThreadPanel"
 
 [[MainDockingFrame.DockedWidgets.Tabs]]
 TabLabel = "Call Stack"
-TabWidth = 103.7037
+TabWidth = 104.717
 Type = "CallStackPanel"
 
 [[MainDockingFrame.DockedWidgets.Tabs]]
 TabLabel = "Immediate"
-TabWidth = 110.1852
+TabWidth = 111.3208
 Type = "ImmediatePanel"
 
 [[MainDockingFrame.DockedWidgets.Tabs]]
 Active = true
 TabLabel = "Output"
-TabWidth = 91.66666
+TabWidth = 92.45284
 Type = "OutputPanel"
 
 [[MainDockingFrame.DockedWidgets.Tabs]]
 TabLabel = "Memory"
-TabWidth = 98.14815
+TabWidth = 99.05661
 Type = "MemoryPanel"
 AutoResize = "Auto_Mul8"
 RequestedWidth = 300.0
 
 [[MainDockingFrame.DockedWidgets.Tabs]]
 TabLabel = "Watch"
-TabWidth = 86.11111
+TabWidth = 86.79246
 Type = "WatchPanel"
-Columns = [{Width = 227.0}, {Width = 227.0}, {Width = 227.0}]
+Columns = [{Width = 222.0}, {Width = 222.0}, {Width = 222.0}]
 Items = [""]
 
 [[MainDockingFrame.DockedWidgets.Tabs]]
 TabLabel = "Auto"
-TabWidth = 77.77777
+TabWidth = 78.30189
 Type = "AutoWatchPanel"
-Columns = [{Width = 227.0}, {Width = 321.0}, {Width = 227.0}]
+Columns = [{Width = 222.0}, {Width = 315.0}, {Width = 222.0}]
