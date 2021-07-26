@@ -29,7 +29,7 @@ namespace BeefBoy
 
 		public static void Log(String data)
 		{
-			debugLog.Append(data);
+			//debugLog.Append(data);
 		}
 
 		public static String SerialData=new $"" ~ delete _;
@@ -60,7 +60,7 @@ namespace BeefBoy
 			return .Ok;
 		}
 
-		public static void loadROM(String ROMPath)
+		public static void loadROM(String ROMPath,bool isBootROM=false)
 		{
 			uint8[] rom;
 			Result<uint8[]> ROMData = ReadAllBytes((ROMPath));
@@ -70,32 +70,35 @@ namespace BeefBoy
 				return;
 			}
 
-			cpu.RAM.load_ROM(rom);
+			cpu.RAM.load_ROM(rom,isBootROM);
 			delete (ROMData.Value);
 		}
+		public static BeefBoy.Display display;
+		public static GPU gpu;
 	}
 	class Program
 	{
+
 		public static int Main(String[] args)
 		{
+			//Use scope. This will unallocate these when they out of scope which will only happen once the program exits.
+			display=scope BeefBoy.Display("BeefBoy",160*6,144*6,.None);
+			gpu=scope GPU();
 			cpu = scope CPU();
-			JsonReader jsonParser=scope JsonReader();
+
+			loadROM(@"C:\Beef\BeefBoyRewrite\src\Data\06-ld r,r.gb",false);
+
+
 			//Setup command line instructions.
-			CowieCLI CLI = scope CowieCLI("BeefBoy", "Emulator for the GB written in beef!");
+			/*CowieCLI CLI = scope CowieCLI("BeefBoy", "Emulator for the GB written in beef!");
 			CLI.RegisterCommand<TestCPU>("testcpu");
 			CLI.RegisterCommand<LoadROM>("loadrom");
-			CLI.Run(args);
-			
+			CLI.Run(args);*/
 
-			repeat{
-				while(!(IsKeyPushedDown(0x1B))){
-					cpu.step();
-				}
-			}while(!(IsKeyPushedDown(0x1B)))
+			display.Run();
 
-
-			Log(scope $"\n Serial port data(accumulated during run): {SerialData}");
-			Result<void> result = WriteAllBytes(@"C:\Beef\BeefBoyRewrite\Logs\Log.txt", debugLog);
+			//Log(scope $"\n Serial port data(accumulated during run): {SerialData}");
+			//Result<void> result = WriteAllBytes(@"C:\Beef\BeefBoyRewrite\Logs\Log.txt", debugLog);
 			return 0;
 		}
 		[Import("user32.dll"),CLink,StdCall]

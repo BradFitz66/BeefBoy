@@ -1,5 +1,5 @@
 FileVersion = 1
-Projects = {BeefBoy = {Path = "."}, CowieCLI = "*", "Atma.Json" = "*"}
+Projects = {BeefBoy = {Path = "."}, CowieCLI = "*", "Atma.Common" = "*"}
 Unlocked = ["CowieCLI"]
 
 [Workspace]

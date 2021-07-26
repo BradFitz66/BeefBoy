@@ -1,6 +1,9 @@
 using System;
 namespace BeefBoy.Emu
 {
+	/*
+	Memory class. This should technically be called the memory bus, 
+	*/
 	class Memory
 	{
 
@@ -49,36 +52,58 @@ namespace BeefBoy.Emu
 		public const uint16 ZERO_PAGE_END = (uint16)0XFFFE;
 		public const uint16 ZERO_PAGE_SIZE = ZERO_PAGE_END - ZERO_PAGE_BEGIN + 1;
 
-		uint8[BOOT_ROM_SIZE] bootROM;
-		uint8[ROM_BANK_0_SIZE] ROMbank0;
-		uint8[ROM_BANK_N_SIZE] ROMbankN;
-		uint8[VRAM_SIZE] VRAM;
-		uint8[EXTERNAL_RAM_SIZE] externalRAM;
-		uint8[WORKING_RAM_SIZE] workingRAM;
-		uint8[ECHO_RAM_SIZE] echoRAM;
-		uint8[OAM_SIZE] OAM;
-		uint8[UNUSED_SIZE] unused;
-		uint8[IO_REGISTERS_SIZE] IOregisters;
-		uint8[ZERO_PAGE_SIZE] zeropage;
-
+		uint8[] bootROM;
+		uint8[] ROMbank0;
+		uint8[] ROMbankN;
+		uint8[] VRAM;
+		uint8[] externalRAM;
+		uint8[] workingRAM;
+		uint8[] echoRAM;
+		uint8[] OAM;
+		uint8[] unused;
+		uint8[] IOregisters;
+		uint8[] zeropage;
 
 		public this()
 		{
-			
-			ROMbank0 = .();
-			ROMbankN = .();
-			VRAM = .();
-			externalRAM = .();
-			workingRAM = .();
-			echoRAM = .();
-			OAM = .();
-			unused = .();
-			IOregisters = .();
-			zeropage = .();
-			
+			ROMbank0 = new uint8[ROM_BANK_0_SIZE];
+			ROMbankN = new uint8[ROM_BANK_N_SIZE];
+			VRAM = new uint8[VRAM_SIZE];
+			externalRAM = new uint8[EXTERNAL_RAM_SIZE];
+			workingRAM = new uint8[WORKING_RAM_SIZE];
+			echoRAM = new uint8[ECHO_RAM_SIZE];
+			OAM = new uint8[OAM_SIZE];
+			unused = new uint8[UNUSED_SIZE];
+			IOregisters = new uint8[IO_REGISTERS_SIZE];
+			zeropage = new uint8[ZERO_PAGE_SIZE];
 		}
+
+		public void reset()
+		{
+			ROMbank0 = new uint8[ROM_BANK_0_SIZE];
+			ROMbankN = new uint8[ROM_BANK_N_SIZE];
+			VRAM = new uint8[VRAM_SIZE];
+			externalRAM = new uint8[EXTERNAL_RAM_SIZE];
+			workingRAM = new uint8[WORKING_RAM_SIZE];
+			echoRAM = new uint8[ECHO_RAM_SIZE];
+			OAM = new uint8[OAM_SIZE];
+			unused = new uint8[UNUSED_SIZE];
+			IOregisters = new uint8[IO_REGISTERS_SIZE];
+			zeropage = new uint8[ZERO_PAGE_SIZE];
+		}
+
 		public ~this()
 		{
+			delete (ROMbank0);
+			delete (ROMbankN);
+			delete (VRAM);
+			delete (echoRAM);
+			delete (externalRAM);
+			delete (OAM);
+			delete (unused);
+			delete (IOregisters);
+			delete (zeropage);
+			delete (workingRAM);
 		}
 
 		//It isn't probably good practice to use an indexer in this context, but I think it's easier than writing
@@ -87,6 +112,25 @@ namespace BeefBoy.Emu
 		{
 			get { return read_byte(uint16(i)); }
 			set { write_byte(uint16(i), value); }
+		}
+
+		enum AddressSpace
+		{
+			ROMbank0,
+			ROMbankN,
+			VRAM,
+			externalRam,
+			workingRAM,
+			echoRAM,
+			OAM,
+			unused,
+			IOregisters,
+			zeropage,
+		}
+
+		public uint8[]* get_oam_space()
+		{
+			return &OAM;
 		}
 
 		uint8 read_ram_area(uint16 address)
@@ -118,29 +162,54 @@ namespace BeefBoy.Emu
 				return 0;
 
 			case when address >= IO_REGISTERS_BEGIN && address <= IO_REGISTERS_END:
-				return IOregisters[address - IO_REGISTERS_BEGIN];
-
+				//ew ugly nested switch
+				switch (address) {
+				case 0xFF00:
+					return 0;
+				case 0xFF01:
+					return 0;//ToDo: Serial
+				case 0xFF02:
+					return 0;//ToDo: Serial
+				case 0xFF04:
+					return (uint8)scope Random().NextI32(); //ToDo: Return a div timer
+				case 0xFF40:
+					return gpu.control;
+				case 0xFF41:
+					return gpu.scrollY;
+				case 0xFF42:
+					return gpu.scrollX;
+				case 0xFF44:
+					return gpu.scanline;
+				case 0xFF0F:
+					return cpu.interrupts.curInterrupt.flags;
+				default:
+					return IOregisters[address-IO_REGISTERS_BEGIN];
+				}
 			case when address >= ZERO_PAGE_BEGIN && address <= ZERO_PAGE_END:
 				return zeropage[address - ZERO_PAGE_BEGIN];
 
 			case 0xFFFF:
-				return 0;
+				return cpu.interrupts.curInterrupt.enable;
 
 			default:
 				Internal.FatalError(scope $"Can't find address 0x{address:x4}");
 			}
 		}
 
-		void write_ram_area(uint16 address, uint8 val)
+		void write_ram_area(uint16 address, uint8 val, bool extendedPermissions = false)
 		{
+			//The only time that should anything be able to write to ROM banks is when initially loading a program. For
+			// this, I have an argument that lets me write to ROM if extendedPermissions is true (by default it's false)
 			switch (address) {
-			case when address >= ROM_BANK_0_BEGIN && address <= ROM_BANK_0_END:
+			case when address >= ROM_BANK_0_BEGIN && address <= ROM_BANK_0_END && extendedPermissions:
 				ROMbank0[address] = val;
 
-			case when address >= ROM_BANK_N_BEGIN && address <= ROM_BANK_0_END:
+			case when address >= ROM_BANK_N_BEGIN && address <= ROM_BANK_0_END && extendedPermissions:
 				ROMbankN[address - ROM_BANK_N_BEGIN] = val;
 
 			case when address >= VRAM_BEGIN && address <= VRAM_END:
+				if (address <= 0x97ff)
+					gpu.updateTile(address, val);
 				VRAM[address - VRAM_BEGIN] = val;
 
 			case when address >= EXTERNAL_RAM_BEGIN && address <= EXTERNAL_RAM_END:
@@ -159,27 +228,49 @@ namespace BeefBoy.Emu
 				break;
 
 			case when address >= IO_REGISTERS_BEGIN && address <= IO_REGISTERS_END:
-				IOregisters[address - IO_REGISTERS_BEGIN] = val;
-
+				switch (address) {
+				case 0xFF00:
+				case 0xFF01:
+					Log("\nWrote to serial port\n");
+					SerialData.Append(scope $"{(char16)val}");
+					IOregisters[address - IO_REGISTERS_BEGIN] = val;//ToDo: Serial
+				case 0xFF02:
+					IOregisters[address - IO_REGISTERS_BEGIN] = val;//ToDo: Serial
+				case 0xFF04:
+					IOregisters[address - IO_REGISTERS_BEGIN] = val;
+				case 0xFF0F:
+					cpu.interrupts.curInterrupt.enable = val;
+				case 0xFF40:
+					gpu.control = val;
+				case 0xFF41:
+					gpu.scrollY = val;
+				case 0xFF42:
+					gpu.scrollX = val;
+				case 0xFF44:
+					copy(0xfe00, (uint16)val << 8, 160);
+				case 0xFF47:
+					for (uint i = 0; i < 4; i++) gpu.backgroundPalette[i] = display.PALETTE[(val >> (i * 2)) & 3];
+				case 0xFF48:
+					for (uint i = 0; i < 4; i++) gpu.spritePalette[0][i] = display.PALETTE[(val >> (i * 2)) & 3];
+				case 0xFF49:
+					for (uint i = 0; i < 4; i++) gpu.spritePalette[1][i] = display.PALETTE[(val >> (i * 2)) & 3];
+				}
 			case when address >= ZERO_PAGE_BEGIN && address <= ZERO_PAGE_END:
-				zeropage[address - IO_REGISTERS_BEGIN] = val;
-
+				zeropage[address - ZERO_PAGE_BEGIN] = 0;
 			case 0xFFFF:
-				//Interrupt stuff.
+				cpu.interrupts.curInterrupt.flags = val;
+
 			}
+		}
+
+		void copy(uint16 destination, uint16 source, uint length)
+		{
+			uint16 i;
+			for (i = 0; i < length; i++) write_byte(destination + i, read_byte(source + i));
 		}
 
 		void write_byte(uint16 address, uint8 val)
 		{
-
-
-
-			//Log anything written to serial port address
-			if (address == 0xFF01)
-			{
-				Log("\nWrote to serial port\n");
-				SerialData.Append(scope $"{(char32)val}");
-			}
 			write_ram_area(address, val);
 		}
 
@@ -193,30 +284,36 @@ namespace BeefBoy.Emu
 			return read_ram_area(address);
 		}
 
-		public void load_ROM(uint8[] romData)
+		public void load_ROM(uint8[] romData, bool isLoadingBootROM=false)
 		{
 			Console.WriteLine(romData.Count);
 			//Do not load bootrom currently. Will error.
-			for (uint16 i = ROM_BANK_0_BEGIN; i < ROM_BANK_N_END; i++)
-			{
-				this[i] = romData[i];
+			if(!isLoadingBootROM){
+				for (uint16 i = ROM_BANK_0_BEGIN; i < ROM_BANK_N_END; i++)
+				{
+					write_ram_area(i, romData[i], true);
+				}
+			}
+			else{
+				for (uint16 i = BOOT_ROM_BEGIN; i < BOOT_ROM_END; i++)
+				{
+					write_ram_area(i, romData[i], true);
+				}
 			}
 		}
 
 		public void dump_memory(bool useHex)
 		{
-
 			Log("----------RAM DUMP----------\n");
 			//Boot ROM and ROM BANK 0 overlap. Show where the boot ROM would be anyway.
-			Log("\n ROM BANK 0 \n");
-			Log("\n BOOT ROM start\n ");
-			int ind=0;
+			Log("\nROM BANK 0 \n");
+			Log("\nBOOT ROM start\n ");
+			int ind = 0;
 			for (let byte in ROMbank0)
 			{
-
 				Log(scope $"0x"..AppendF("{0:X2}", (byte))..Append(" "));
-				if(ind==257)
-					Log("\n BOOT ROM end \n");
+				if (ind == 257)
+					Log("\nBOOT ROM end \n");
 				ind++;
 			}
 			Log("\n ROM BANK N \n");

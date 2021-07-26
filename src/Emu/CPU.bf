@@ -59,10 +59,10 @@ namespace BeefBoy.Emu
 		};
 	}
 
+
+
 	//Define a typealias for the execute function. We have two optional arguments for operand length for opcodes like LD
 	// SP, u16
-
-
 	typealias instructionExec = function void(uint8, uint16);
 	public struct instruction
 	{
@@ -85,9 +85,13 @@ namespace BeefBoy.Emu
 	{
 		public Memory RAM ~ delete _;
 		public Registers registers = .();
+		public uint64 ticks;
+		public bool stopped;
+
+		public Interrupts interrupts ~ delete _;
 
 		//Array of all non-prefixed instructions
-		public instruction[256] instructions = .(
+		instruction[256] instructions = .(
 			.("NOP"                  , (uint8)1, => nop                               ),
 			.("LD BC, u16"           , (uint8)2, => LoadFunctions         .ld_bc_nn   ),
 			.("LD .(BC), A"          , (uint8)0, => LoadFunctions         .ld_bc_a    ),
@@ -346,6 +350,24 @@ namespace BeefBoy.Emu
 			.("RST 0x38"             , (uint8)0, => RstFunctions          .rst_38     )
 		);
 
+		const uint8[256] instructionTicks = .(
+			2, 6, 4, 4, 2, 2, 4, 4, 10, 4, 4, 4, 2, 2, 4, 4, // 0x0_
+			2, 6, 4, 4, 2, 2, 4, 4,  4, 4, 4, 4, 2, 2, 4, 4, // 0x1_
+			0, 6, 4, 4, 2, 2, 4, 2,  0, 4, 4, 4, 2, 2, 4, 2, // 0x2_
+			4, 6, 4, 4, 6, 6, 6, 2,  0, 4, 4, 4, 2, 2, 4, 2, // 0x3_
+			2, 2, 2, 2, 2, 2, 4, 2,  2, 2, 2, 2, 2, 2, 4, 2, // 0x4_
+			2, 2, 2, 2, 2, 2, 4, 2,  2, 2, 2, 2, 2, 2, 4, 2, // 0x5_
+			2, 2, 2, 2, 2, 2, 4, 2,  2, 2, 2, 2, 2, 2, 4, 2, // 0x6_
+			4, 4, 4, 4, 4, 4, 2, 4,  2, 2, 2, 2, 2, 2, 4, 2, // 0x7_
+			2, 2, 2, 2, 2, 2, 4, 2,  2, 2, 2, 2, 2, 2, 4, 2, // 0x8_
+			2, 2, 2, 2, 2, 2, 4, 2,  2, 2, 2, 2, 2, 2, 4, 2, // 0x9_
+			2, 2, 2, 2, 2, 2, 4, 2,  2, 2, 2, 2, 2, 2, 4, 2, // 0xa_
+			2, 2, 2, 2, 2, 2, 4, 2,  2, 2, 2, 2, 2, 2, 4, 2, // 0xb_
+			0, 6, 0, 6, 0, 8, 4, 8,  0, 2, 0, 0, 0, 6, 4, 8, // 0xc_
+			0, 6, 0, 0, 0, 8, 4, 8,  0, 8, 0, 0, 0, 0, 4, 8, // 0xd_
+			6, 6, 4, 0, 0, 8, 4, 8,  8, 2, 8, 0, 0, 0, 4, 8, // 0xe_
+			6, 6, 4, 2, 0, 8, 4, 8,  6, 4, 8, 2, 0, 0, 4, 8  // 0xf_
+		);
 
 		public static void nop(uint8 i = 0, uint16 i2 = 0)
 		{
@@ -356,18 +378,106 @@ namespace BeefBoy.Emu
 			Log("Undefined instruction: ");
 		}
 
+		public void reset(){
+			RAM.reset();
+			registers.a = 0x01;
+			registers.flags = 0xb0;
+			registers.b = 0x00;
+			registers.c = 0x13;
+			registers.d = 0x00;
+			registers.e = 0xd8;
+			registers.h = 0x01;
+			registers.l = 0x4d;
+			registers.sp = 0xfffe;
+			registers.pc = 0x100;
+			ticks=0;
+
+			RAM[0xFF05]=0;
+			RAM[0xFF06]=0;
+			RAM[0xFF07]=0;
+			RAM[0xFF10]=0x80;
+			RAM[0xFF11]=0xBF;
+			RAM[0xFF12]=0xF3;
+			RAM[0xFF14]=0xBF;
+			RAM[0xFF16]=0x3F;
+			RAM[0xFF17]=0x00;
+			RAM[0xFF19]=0xBF;
+			RAM[0xFF1A]=0x7A;
+			RAM[0xFF1B]=0xFF;
+			RAM[0xFF1C]=0x9F;
+			RAM[0xFF1E]=0xBF;
+			RAM[0xFF20]=0xFF;
+			RAM[0xFF21]=0x00;
+			RAM[0xFF22]=0x00;
+			RAM[0xFF23]=0xBF;
+			RAM[0xFF24]=0x77;
+			RAM[0xFF25]=0xF3;
+			RAM[0xFF26]=0xF1;
+			RAM[0xFF40]=0x91;
+			RAM[0xFF42]=0x00;
+			RAM[0xFF43]=0x00;
+			RAM[0xFF45]=0x00;
+			RAM[0xFF47]=0xFC;
+			RAM[0xFF48]=0xFF;
+			RAM[0xFF49]=0xFF;
+			RAM[0xFF4A]=0x00;
+			RAM[0xFF4B]=0x00;
+			RAM[0xFFFF]=0x00;
+
+			gpu.backgroundPalette[0] = display.PALETTE [0];
+			gpu.backgroundPalette[1] = display.PALETTE[1];
+			gpu.backgroundPalette[2] = display.PALETTE[2];
+			gpu.backgroundPalette[3] = display.PALETTE[3];
+
+			gpu.spritePalette[0][0] = display.PALETTE[0];
+			gpu.spritePalette[0][1] = display.PALETTE[1];
+			gpu.spritePalette[0][2] = display.PALETTE[2];
+			gpu.spritePalette[0][3] = display.PALETTE[3];
+
+			gpu.spritePalette[1][0] = display.PALETTE[0];
+			gpu.spritePalette[1][1] = display.PALETTE[1];
+			gpu.spritePalette[1][2] = display.PALETTE[2];
+			gpu.spritePalette[1][3] = display.PALETTE[3];
+
+			gpu.control = 0;
+			gpu.scrollX = 0;
+			gpu.scrollY = 0;
+			gpu.scanline = 0;
+			gpu.tick = 0;
+
+			ticks=0;
+			stopped=false;
+		}
+
 		public this()
 		{
 			RAM = new Memory();
+			interrupts=new Interrupts();
+
+			gpu.backgroundPalette[0] = display.PALETTE [0];
+			gpu.backgroundPalette[1] = display.PALETTE[1];
+			gpu.backgroundPalette[2] = display.PALETTE[2];
+			gpu.backgroundPalette[3] = display.PALETTE[3];
+
+			gpu.spritePalette[0][0] = display.PALETTE[0];
+			gpu.spritePalette[0][1] = display.PALETTE[1];
+			gpu.spritePalette[0][2] = display.PALETTE[2];
+			gpu.spritePalette[0][3] = display.PALETTE[3];
+
+			gpu.spritePalette[1][0] = display.PALETTE[0];
+			gpu.spritePalette[1][1] = display.PALETTE[1];
+			gpu.spritePalette[1][2] = display.PALETTE[2];
+			gpu.spritePalette[1][3] = display.PALETTE[3];
 		}
 
-		public static void DecodeAndRunInstruction(String name)
-		{
-		}
-
-		//Step the CPU. This runs the current opcode at the program counter
+		//Step the CPU.
 		public void step()
 		{
+
+			if(stopped)
+				return;
+
+
 			//Gets the instruction at current pc and then increases pc by one.
 			uint8 i = RAM[registers.pc++];
 			uint16 operand = 0;
@@ -375,15 +485,15 @@ namespace BeefBoy.Emu
 			if (instructions[i].operandLength == 1) operand = (uint16)cpu.RAM[registers.pc];
 			else if (instructions[i].operandLength == 2) operand = cpu.RAM.read_short(registers.pc);
 
-			if (i != 0xCB)
-				Log(scope $"Running instruction {instructions[i].disassembly} (0x{i:x4}) with operand {operand:x4} @ PC = 0x{cpu.registers.pc-1:x4}\n");
+			//if (i != 0xCB)
+				//Console.WriteLine(scope $"Running instruction {instructions[i].disassembly} (0x{i:x4}) with operand {operand:x4} @ PC = 0x{cpu.registers.pc-1:x4}\n");
 
 
 			String RegisterString=scope $"a = 0x{registers.a:x2} b = 0x{registers.b:x2} c = 0x{registers.c:x2} d = 0x{registers.d:x2} e = 0x{registers.e:x2} h = 0x{registers.h:x2} l = 0x{registers.l:x2} af = 0x{registers.af:x4} bc = 0x{registers.bc:x4} de = 0x{registers.de:x4} hl = 0x{registers.hl:x4} sp = 0x{registers.sp:x4}\n";
 			String Flags=scope $"z = {Utils.getBit(cpu.registers.flags,7)} s = {Utils.getBit(cpu.registers.flags,6)} hc = {Utils.getBit(cpu.registers.flags,5)} c = {Utils.getBit(cpu.registers.flags,4)}\n\n";
 
-			Log(RegisterString);
-			Log(Flags);
+			//Console.WriteLine(RegisterString);
+			//Console.WriteLine(Flags);
 			
 
 			registers.pc += instructions[i].operandLength;
@@ -400,7 +510,7 @@ namespace BeefBoy.Emu
 				break;
 			}
 
-
+			ticks+=instructionTicks[i];
 		}
 	}
 }

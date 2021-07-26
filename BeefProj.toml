@@ -1,5 +1,5 @@
 FileVersion = 1
-Dependencies = {corlib = "*", CowieCLI = "*", "Atma.Json" = "*"}
+Dependencies = {corlib = "*", CowieCLI = "*", "Atma.Common" = "*"}
 
 [Project]
 Name = "BeefBoy"
