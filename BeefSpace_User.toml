@@ -1,7 +1,7 @@
 FileVersion = 1
 LastConfig = "Debug"
 LastPlatform = "Win64"
-RecentFilesList = ["src\\Emu\\CPU.bf", "src\\Display.bf", "src\\Program.bf", "src\\Emu\\GPU.bf", "src\\Emu\\Memory.bf", "src\\Emu\\Interrupts.bf", "Disassembly", "c:\\Program Files\\BeefLang\\BeefLibs\\Atma.Framework\\src\\Atma.Common\\src\\Graphics\\Rendering\\Texture\\Texture.bf", "c:\\Program Files\\BeefLang\\BeefLibs\\Atma.Framework\\src\\Atma.Common\\src\\Platform\\OpenGL\\Graphics\\Rendering\\GL_Texture.bf", "src\\CLICommands\\CLICommands.bf", "src\\Emu\\Instructions\\JumpFunctions.bf"]
+RecentFilesList = ["src\\Display.bf", "src\\Program.bf", "src\\Emu\\GPU.bf", "src\\Emu\\CPU.bf", "c:\\Program Files\\BeefLang\\BeefLibs\\corlib\\src\\Array.bf", "src\\Emu\\Memory.bf", "src\\Emu\\Interrupts.bf", "Disassembly", "c:\\Program Files\\BeefLang\\BeefLibs\\Atma.Framework\\src\\Atma.Common\\src\\Graphics\\Rendering\\Texture\\Texture.bf", "c:\\Program Files\\BeefLang\\BeefLibs\\Atma.Framework\\src\\Atma.Common\\src\\Platform\\OpenGL\\Graphics\\Rendering\\GL_Texture.bf", "src\\CLICommands\\CLICommands.bf", "src\\Emu\\Instructions\\JumpFunctions.bf"]
 
 [MainWindow]
 X = 785
@@ -42,6 +42,15 @@ DefaultDocumentsTabbedView = true
 Type = "TabbedView"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
+TabLabel = "Array.bf"
+TabWidth = 84.90566
+Type = "SourceViewPanel"
+FilePath = "c:\\Program Files\\BeefLang\\BeefLibs\\corlib\\src\\Array.bf"
+CursorPos = 6358
+VertPos = 3536.0
+ProjectName = "corlib"
+
+[[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
 TabLabel = "GL_Texture.bf"
 TabWidth = 116.9811
 Type = "SourceViewPanel"
@@ -70,8 +79,8 @@ TabLabel = "Display.bf"
 TabWidth = 85.66039
 Type = "SourceViewPanel"
 FilePath = "src\\Display.bf"
-CursorPos = 3266
-VertPos = 2112.0
+CursorPos = 2005
+VertPos = 1280.0
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
@@ -79,8 +88,8 @@ TabLabel = "GPU.bf"
 TabWidth = 70.56605
 Type = "SourceViewPanel"
 FilePath = "src\\Emu\\GPU.bf"
-CursorPos = 3380
-VertPos = 2272.0
+CursorPos = 2552
+VertPos = 1482.12
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
@@ -104,8 +113,7 @@ TabLabel = "Memory.bf"
 TabWidth = 93.20756
 Type = "SourceViewPanel"
 FilePath = "src\\Emu\\Memory.bf"
-CursorPos = 9112
-VertPos = 4352.0
+CursorPos = 8351
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
@@ -113,8 +121,8 @@ TabLabel = "Program.bf"
 TabWidth = 94.15095
 Type = "SourceViewPanel"
 FilePath = "src\\Program.bf"
-CursorPos = 2969
-VertPos = 1200.0
+CursorPos = 2343
+VertPos = 1056.0
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]
@@ -122,8 +130,8 @@ TabLabel = "CPU.bf"
 TabWidth = 69.62265
 Type = "SourceViewPanel"
 FilePath = "src\\Emu\\CPU.bf"
-CursorPos = 25886
-VertPos = 7536.0
+CursorPos = 26992
+VertPos = 7584.0
 ProjectName = "BeefBoy"
 
 [[MainDockingFrame.DockedWidgets.DockedWidgets.Tabs]]

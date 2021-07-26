@@ -152,6 +152,7 @@ namespace BeefBoy.Emu
 					mode = .GPU_MODE_HBLANK;
 					tick = 0;
 					display.renderScanlines();
+					
 				}
 				break;
 			}

@@ -90,9 +90,11 @@ namespace BeefBoy
 
 				Sprite sprite = .();
 				let index=i*4;
+
 				sprite.y=cpu.RAM[Memory.OAM_BEGIN+(uint16)index]-16;
 				sprite.x=cpu.RAM[Memory.OAM_BEGIN+(uint16)index+1]-8;
 				sprite.tile=cpu.RAM[Memory.OAM_BEGIN+(uint16)index+3];
+
 				let attributes=cpu.RAM[Memory.OAM_BEGIN+(uint16)index+3];
 				sprite.options.vFlip=Utils.getBit(attributes,6);
 				sprite.options.hFlip=Utils.getBit(attributes,5);
