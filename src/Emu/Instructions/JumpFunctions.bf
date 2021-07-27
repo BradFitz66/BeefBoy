@@ -7,8 +7,12 @@ namespace BeefBoy.Emu.Instructions
 		{
 			if (Utils.getBit(cpu.registers.flags, 7) == 0)
 			{
+				cpu.ticks+=12;
 				Log("Zero bit is not set!\n");
 				cpu.registers.pc = (uint16)((int16)cpu.registers.pc + (int8)operand1);
+			}
+			else{
+				cpu.ticks+=8;
 			}
 		}
 
@@ -16,7 +20,11 @@ namespace BeefBoy.Emu.Instructions
 		{
 			if (Utils.getBit(cpu.registers.flags, 7) == 1)
 			{
+				cpu.ticks+=12;
 				cpu.registers.pc = (uint16)((int16)cpu.registers.pc + (int8)operand1);
+			}
+			else{
+				cpu.ticks+=8;
 			}
 		}
 
@@ -31,7 +39,11 @@ namespace BeefBoy.Emu.Instructions
 		{
 			if (Utils.getBit(cpu.registers.flags, 4) == 1)
 			{
+				cpu.ticks+=12;
 				cpu.registers.pc = (uint16)((int16)cpu.registers.pc + (int8)operand1);
+			}
+			else{
+				cpu.ticks+=8;
 			}
 		}
 
@@ -44,7 +56,11 @@ namespace BeefBoy.Emu.Instructions
 		{
 			if (Utils.getBit(cpu.registers.flags, 1) == 0)
 			{
+				cpu.ticks+=12;
 				cpu.registers.pc = operand2;
+			}
+			else{
+				cpu.ticks+=8;
 			}
 		}
 
@@ -52,7 +68,11 @@ namespace BeefBoy.Emu.Instructions
 		{
 			if (Utils.getBit(cpu.registers.flags, 4) == 0)
 			{
+				cpu.ticks+=12;
 				cpu.registers.pc = operand2;
+			}
+			else{
+				cpu.ticks+=8;
 			}
 		}
 
@@ -60,7 +80,11 @@ namespace BeefBoy.Emu.Instructions
 		{
 			if (Utils.getBit(cpu.registers.flags, 7) == 1)
 			{
+				cpu.ticks+=16;
 				cpu.registers.pc = operand2;
+			}
+			else{
+				cpu.ticks+=12;
 			}
 		}
 
@@ -68,7 +92,11 @@ namespace BeefBoy.Emu.Instructions
 		{
 			if (Utils.getBit(cpu.registers.flags, 4) == 1)
 			{
+				cpu.ticks+=16;
 				cpu.registers.pc = operand2;
+			}
+			else{
+				cpu.ticks+=12;
 			}
 		}
 
@@ -91,7 +119,11 @@ namespace BeefBoy.Emu.Instructions
 		{
 			if (Utils.getBit(cpu.registers.flags, 7) == 1)
 			{
+				cpu.ticks+=20;
 				cpu.registers.pc = cpu.RAM.read_short_from_stack();
+			}
+			else{
+				cpu.ticks+=8;
 			}
 		}
 
@@ -100,6 +132,10 @@ namespace BeefBoy.Emu.Instructions
 			if (Utils.getBit(cpu.registers.flags, 7) == 0)
 			{
 				cpu.registers.pc = cpu.RAM.read_short_from_stack();
+				cpu.ticks+=20;
+			}
+			else{
+				cpu.ticks+=8;
 			}
 		}
 
@@ -107,7 +143,11 @@ namespace BeefBoy.Emu.Instructions
 		{
 			if (Utils.getBit(cpu.registers.flags, 4) == 0)
 			{
+				cpu.ticks+=20;
 				cpu.registers.pc = cpu.RAM.read_short_from_stack();
+			}
+			else{
+				cpu.ticks+=8;
 			}
 		}
 
@@ -115,7 +155,11 @@ namespace BeefBoy.Emu.Instructions
 		{
 			if (Utils.getBit(cpu.registers.flags, 4) == 1)
 			{
+				cpu.ticks+=20;
 				cpu.registers.pc = cpu.RAM.read_short_from_stack();
+			}
+			else{
+				cpu.ticks+=8;
 			}
 		}
 

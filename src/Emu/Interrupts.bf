@@ -15,37 +15,37 @@ namespace BeefBoy.Emu
 		const uint8 INTERRUPTS_TIMER = 1 << 2;
 		const uint8 INTERRUPTS_SERIAL = 1 << 3;
 		const uint8 INTERRUPTS_JOYPAD = 1 << 4;
-		void step()
+		public void step()
 		{
-			if (curInterrupt.master == 1 && curInterrupt.enable == 1 && curInterrupt.flags == 1)
+			if (curInterrupt.master > 0 && curInterrupt.enable > 0 && curInterrupt.flags > 0)
 			{
 				uint8 fire = curInterrupt.enable & curInterrupt.flags;
 
-				if (fire & INTERRUPTS_VBLANK == 1)
+				if (fire & INTERRUPTS_VBLANK > 0)
 				{
 					curInterrupt.flags &= ~INTERRUPTS_VBLANK;
 					vblank();
 				}
 
-				if (fire & INTERRUPTS_LCDSTAT == 1)
+				if (fire & INTERRUPTS_LCDSTAT > 0)
 				{
 					curInterrupt.flags &= ~INTERRUPTS_LCDSTAT;
 					lcdStat();
 				}
 
-				if (fire & INTERRUPTS_TIMER == 1)
+				if (fire & INTERRUPTS_TIMER > 0)
 				{
 					curInterrupt.flags &= ~INTERRUPTS_TIMER;
 					timer();
 				}
 
-				if (fire & INTERRUPTS_SERIAL == 1)
+				if (fire & INTERRUPTS_SERIAL > 0)
 				{
 					curInterrupt.flags &= ~INTERRUPTS_SERIAL;
 					serial();
 				}
 
-				if (fire & INTERRUPTS_JOYPAD == 1)
+				if (fire & INTERRUPTS_JOYPAD > 0)
 				{
 					curInterrupt.flags &= ~INTERRUPTS_JOYPAD;
 					joypad();

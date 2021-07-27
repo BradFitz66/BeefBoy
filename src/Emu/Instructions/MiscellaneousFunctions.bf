@@ -11,6 +11,7 @@ namespace BeefBoy.Emu
 		}
 		public static void stop(uint8 address1, uint16 address2)
 		{
+
 		}
 		public static void halt(uint8 param, uint16 param2)
 		{
@@ -18,12 +19,12 @@ namespace BeefBoy.Emu
 
 		public static void di(uint8 param, uint16 param2)
 		{
-
+			cpu.interrupts.curInterrupt.master=0;
 		}
 
 		public static void ei(uint8 param, uint16 param2)
 		{
-
+			cpu.interrupts.curInterrupt.master=1;
 		}
 
 		public static void ccf(uint8 param, uint16 param2)

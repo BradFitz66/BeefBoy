@@ -15,17 +15,17 @@ namespace BeefBoy.Emu
 	{
 
 		//registers are initialized to the values they would be after the boot rom is ran.
-		public uint8 a=0x01;
-		public uint8 b=0x00;
-		public uint8 c=0x13;
-		public uint8 d=0x00;
-		public uint8 e=0xD8;
-		public uint8 h=0x01;
-		public uint8 l=0x4D;
+		public uint8 a;
+		public uint8 b;
+		public uint8 c;
+		public uint8 d;
+		public uint8 e;
+		public uint8 h;
+		public uint8 l;
 
-		public uint8 flags=0xB0;
-		public uint16 sp=0xFFFE;
-		public uint16 pc=0x100;
+		public uint8 flags;
+		public uint16 sp;
+		public uint16 pc;
 		public uint16 af
 		{
 			get { return (uint16)a << 8 | flags; }
@@ -108,7 +108,7 @@ namespace BeefBoy.Emu
 			.("DEC C"                , (uint8)0, => IncDecFunctions       .dec_c      ),
 			.("LD C, u8"             , (uint8)1, => LoadFunctions         .ld_c_n     ),
 			.("RRCA"                 , (uint8)0, => BitwiseFunctions      .rrca       ),
-			.("STOP"                 , (uint8)1, => MiscellaneousFunctions.stop       ),
+			.("STOP"                 , (uint8)1, => undefined                         ),
 			.("LD DE, u16"           , (uint8)2, => LoadFunctions         .ld_de_nn   ),
 			.("LD .(DE), A"          , (uint8)0, => LoadFunctions         .ld_de_a    ),
 			.("INC DE"               , (uint8)0, => IncDecFunctions       .inc_de     ),
@@ -131,7 +131,7 @@ namespace BeefBoy.Emu
 			.("INC H"                , (uint8)0, => IncDecFunctions       .inc_h      ),
 			.("DEC H"                , (uint8)0, => IncDecFunctions       .dec_h      ),
 			.("LD H, u8"             , (uint8)1, => LoadFunctions         .ld_h_n     ),
-			.("DAA"                  , (uint8)0, => MiscellaneousFunctions.daa        ),
+			.("DAA"                  , (uint8)0, => undefined                         ),
 			.("JR Z, u8"             , (uint8)1, => JumpFunctions         .jr_z_n     ),
 			.("ADD HL, HL"           , (uint8)0, => AddFunctions          .add_hl_hl  ),
 			.("LDI A, .(HL)"         , (uint8)0, => LoadFunctions         .ldi_a_hl   ),
@@ -139,7 +139,7 @@ namespace BeefBoy.Emu
 			.("INC L"                , (uint8)0, => IncDecFunctions       .inc_l      ),
 			.("DEC L"                , (uint8)0, => IncDecFunctions       .dec_l      ),
 			.("LD L, u8"             , (uint8)1, => LoadFunctions         .ld_l_n     ),
-			.("CPL"                  , (uint8)0, => MiscellaneousFunctions.cpl        ),
+			.("CPL"                  , (uint8)0, => undefined                         ),
 			.("JR NC, u8"            , (uint8)1, => JumpFunctions         .jr_nc_n    ),
 			.("LD SP, u16"           , (uint8)2, => LoadFunctions         .ld_sp_nn   ),
 			.("LDD .(HL), A"         , (uint8)0, => LoadFunctions         .ldd_hl_a   ),
@@ -147,7 +147,7 @@ namespace BeefBoy.Emu
 			.("INC .(HL)"            , (uint8)0, => IncDecFunctions       .inc_hl     ),
 			.("DEC .(HL)"            , (uint8)0, => IncDecFunctions       .dec_hl     ),
 			.("LD .(HL), u8"         , (uint8)1, => LoadFunctions         .ld_hl_n    ),
-			.("SCF"                  , (uint8)0, => MiscellaneousFunctions.scf        ),
+			.("SCF"                  , (uint8)0, => undefined                         ),
 			.("JR C, u8"             , (uint8)1, => JumpFunctions         .jr_c_n     ),
 			.("ADD HL, SP"           , (uint8)0, => AddFunctions          .add_hl_sp  ),
 			.("LDD A, .(HL)"         , (uint8)0, => LoadFunctions         .ldd_a_hl   ),
@@ -155,7 +155,7 @@ namespace BeefBoy.Emu
 			.("INC A"                , (uint8)0, => IncDecFunctions       .inc_a      ),
 			.("DEC A"                , (uint8)0, => IncDecFunctions       .dec_a      ),
 			.("LD A, u8"             , (uint8)1, => LoadFunctions         .ld_a_n     ),
-			.("CCF"                  , (uint8)0, => MiscellaneousFunctions.ccf        ),
+			.("CCF"                  , (uint8)0, => undefined				          ),
 			.("LD B, B"              , (uint8)0, => nop                               ),//Loading a register into itself is fuctionally the same as the NOP command
 			.("LD B, C"              , (uint8)0, => LoadFunctions         .ld_b_c     ),
 			.("LD B, D"              , (uint8)0, => LoadFunctions         .ld_b_d     ),
@@ -210,7 +210,7 @@ namespace BeefBoy.Emu
 			.("LD .(HL), E"          , (uint8)0, => LoadFunctions         .ld_hl_e    ),
 			.("LD .(HL), H"          , (uint8)0, => LoadFunctions         .ld_hl_h    ),
 			.("LD .(HL), L"          , (uint8)0, => LoadFunctions         .ld_hl_l    ),
-			.("HALT"                 , (uint8)0, => MiscellaneousFunctions.halt       ),
+			.("HALT"                 , (uint8)0, => undefined                         ),
 			.("LD .(HL), A"          , (uint8)0, => LoadFunctions         .ld_hl_a    ),
 			.("LD A, B"              , (uint8)0, => LoadFunctions         .ld_a_b     ),
 			.("LD A, C"              , (uint8)0, => LoadFunctions         .ld_a_c     ),
@@ -343,7 +343,7 @@ namespace BeefBoy.Emu
 			.("LD HL, SP+u8"         , (uint8)1, => LoadFunctions         .ld_hl_spnn ),
 			.("LD SP, HL"            , (uint8)0, => LoadFunctions         .ld_sp_hl   ),
 			.("LD A, .(u16)"         , (uint8)2, => LoadFunctions         .ld_a_nn    ),
-			.("EI"                   , (uint8)0, => MiscellaneousFunctions.ei         ),
+			.("EI"                   , (uint8)0, => undefined         				  ),
 			.("UNKNOWN"              , (uint8)0, => nop                               ),
 			.("UNKNOWN"              , (uint8)0, => nop                               ),
 			.("CP u8"                , (uint8)1, => CompareFunctions      .cp_n       ),
@@ -375,99 +375,70 @@ namespace BeefBoy.Emu
 
 		public static void undefined(uint8 i = 0, uint16 i2 = 0)
 		{
-			Log("Undefined instruction: ");
+			Console.WriteLine(scope $"Undefined instruction {cpu.instructions[cpu.RAM[cpu.registers.pc-1]].disassembly}");
 		}
-
+		
 		public void reset(){
 			RAM.reset();
-			registers.a = 0x01;
-			registers.flags = 0xb0;
-			registers.b = 0x00;
-			registers.c = 0x13;
-			registers.d = 0x00;
-			registers.e = 0xd8;
-			registers.h = 0x01;
-			registers.l = 0x4d;
-			registers.sp = 0xfffe;
-			registers.pc = 0x100;
-			ticks=0;
 
-			RAM[0xFF05]=0;
-			RAM[0xFF06]=0;
-			RAM[0xFF07]=0;
-			RAM[0xFF10]=0x80;
-			RAM[0xFF11]=0xBF;
-			RAM[0xFF12]=0xF3;
-			RAM[0xFF14]=0xBF;
-			RAM[0xFF16]=0x3F;
-			RAM[0xFF17]=0x00;
-			RAM[0xFF19]=0xBF;
-			RAM[0xFF1A]=0x7A;
-			RAM[0xFF1B]=0xFF;
-			RAM[0xFF1C]=0x9F;
-			RAM[0xFF1E]=0xBF;
-			RAM[0xFF20]=0xFF;
-			RAM[0xFF21]=0x00;
-			RAM[0xFF22]=0x00;
-			RAM[0xFF23]=0xBF;
-			RAM[0xFF24]=0x77;
-			RAM[0xFF25]=0xF3;
-			RAM[0xFF26]=0xF1;
-			RAM[0xFF40]=0x91;
-			RAM[0xFF42]=0x00;
-			RAM[0xFF43]=0x00;
-			RAM[0xFF45]=0x00;
-			RAM[0xFF47]=0xFC;
-			RAM[0xFF48]=0xFF;
-			RAM[0xFF49]=0xFF;
-			RAM[0xFF4A]=0x00;
-			RAM[0xFF4B]=0x00;
-			RAM[0xFFFF]=0x00;
+			registers.flags=0;
+			registers.a=0;
+			registers.b=0;
+			registers.c=0;
+			registers.d=0;
+			registers.e=0;
+			registers.h=0;
+			registers.l=0;
+			registers.pc=0;
+			registers.sp=0;
 
-			gpu.backgroundPalette[0] = display.PALETTE [0];
-			gpu.backgroundPalette[1] = display.PALETTE[1];
-			gpu.backgroundPalette[2] = display.PALETTE[2];
-			gpu.backgroundPalette[3] = display.PALETTE[3];
+			ppu.backgroundPalette[0] = display.PALETTE [0];
+			ppu.backgroundPalette[1] = display.PALETTE[1];
+			ppu.backgroundPalette[2] = display.PALETTE[2];
+			ppu.backgroundPalette[3] = display.PALETTE[3];
 
-			gpu.spritePalette[0][0] = display.PALETTE[0];
-			gpu.spritePalette[0][1] = display.PALETTE[1];
-			gpu.spritePalette[0][2] = display.PALETTE[2];
-			gpu.spritePalette[0][3] = display.PALETTE[3];
+			ppu.spritePalette[0][0] = display.PALETTE[0];
+			ppu.spritePalette[0][1] = display.PALETTE[1];
+			ppu.spritePalette[0][2] = display.PALETTE[2];
+			ppu.spritePalette[0][3] = display.PALETTE[3];
 
-			gpu.spritePalette[1][0] = display.PALETTE[0];
-			gpu.spritePalette[1][1] = display.PALETTE[1];
-			gpu.spritePalette[1][2] = display.PALETTE[2];
-			gpu.spritePalette[1][3] = display.PALETTE[3];
+			ppu.spritePalette[1][0] = display.PALETTE[0];
+			ppu.spritePalette[1][1] = display.PALETTE[1];
+			ppu.spritePalette[1][2] = display.PALETTE[2];
+			ppu.spritePalette[1][3] = display.PALETTE[3];
 
-			gpu.control = 0;
-			gpu.scrollX = 0;
-			gpu.scrollY = 0;
-			gpu.scanline = 0;
-			gpu.tick = 0;
+			ppu.control = 0;
+			ppu.scrollX = 0;
+			ppu.scrollY = 0;
+			ppu.scanline = 0;
+			ppu.tick = 0;
 
 			ticks=0;
 			stopped=false;
+			
 		}
 
 		public this()
 		{
+			ppu.backgroundPalette[0] = display.PALETTE [0];
+			ppu.backgroundPalette[1] = display.PALETTE[1];
+			ppu.backgroundPalette[2] = display.PALETTE[2];
+			ppu.backgroundPalette[3] = display.PALETTE[3];
+
+			ppu.spritePalette[0][0] = display.PALETTE[0];
+			ppu.spritePalette[0][1] = display.PALETTE[1];
+			ppu.spritePalette[0][2] = display.PALETTE[2];
+			ppu.spritePalette[0][3] = display.PALETTE[3];
+
+			ppu.spritePalette[1][0] = display.PALETTE[0];
+			ppu.spritePalette[1][1] = display.PALETTE[1];
+			ppu.spritePalette[1][2] = display.PALETTE[2];
+			ppu.spritePalette[1][3] = display.PALETTE[3];
+
 			RAM = new Memory();
 			interrupts=new Interrupts();
 
-			gpu.backgroundPalette[0] = display.PALETTE [0];
-			gpu.backgroundPalette[1] = display.PALETTE[1];
-			gpu.backgroundPalette[2] = display.PALETTE[2];
-			gpu.backgroundPalette[3] = display.PALETTE[3];
-
-			gpu.spritePalette[0][0] = display.PALETTE[0];
-			gpu.spritePalette[0][1] = display.PALETTE[1];
-			gpu.spritePalette[0][2] = display.PALETTE[2];
-			gpu.spritePalette[0][3] = display.PALETTE[3];
-
-			gpu.spritePalette[1][0] = display.PALETTE[0];
-			gpu.spritePalette[1][1] = display.PALETTE[1];
-			gpu.spritePalette[1][2] = display.PALETTE[2];
-			gpu.spritePalette[1][3] = display.PALETTE[3];
+			
 		}
 
 		//Step the CPU.
@@ -495,7 +466,6 @@ namespace BeefBoy.Emu
 			//Console.WriteLine(RegisterString);
 			//Console.WriteLine(Flags);
 			
-
 			registers.pc += instructions[i].operandLength;
 
 			switch (instructions[i].operandLength) {

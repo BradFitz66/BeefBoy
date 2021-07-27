@@ -173,13 +173,13 @@ namespace BeefBoy.Emu
 				case 0xFF04:
 					return (uint8)scope Random().NextI32(); //ToDo: Return a div timer
 				case 0xFF40:
-					return gpu.control;
+					return ppu.control;
 				case 0xFF41:
-					return gpu.scrollY;
+					return ppu.scrollY;
 				case 0xFF42:
-					return gpu.scrollX;
+					return ppu.scrollX;
 				case 0xFF44:
-					return gpu.scanline;
+					return ppu.scanline;
 				case 0xFF0F:
 					return cpu.interrupts.curInterrupt.flags;
 				default:
@@ -198,6 +198,7 @@ namespace BeefBoy.Emu
 
 		void write_ram_area(uint16 address, uint8 val, bool extendedPermissions = false)
 		{
+
 			//The only time that should anything be able to write to ROM banks is when initially loading a program. For
 			// this, I have an argument that lets me write to ROM if extendedPermissions is true (by default it's false)
 			switch (address) {
@@ -208,10 +209,12 @@ namespace BeefBoy.Emu
 				ROMbankN[address - ROM_BANK_N_BEGIN] = val;
 
 			case when address >= VRAM_BEGIN && address <= VRAM_END:
-				if (address <= 0x97ff)
-					gpu.updateTile(address, val);
+				Console.WriteLine(scope $"Writing to VRAM");
+				if (address <= 0x97ff){
+					ppu.updateTile(address, val);
+				}
 				VRAM[address - VRAM_BEGIN] = val;
-
+				
 			case when address >= EXTERNAL_RAM_BEGIN && address <= EXTERNAL_RAM_END:
 				externalRAM[address - EXTERNAL_RAM_BEGIN] = val;
 
@@ -230,9 +233,11 @@ namespace BeefBoy.Emu
 			case when address >= IO_REGISTERS_BEGIN && address <= IO_REGISTERS_END:
 				switch (address) {
 				case 0xFF00:
+					Console.WriteLine("\nWrote to serial port\n");
+					SerialData.Append(scope $"{val}");
 				case 0xFF01:
-					Log("\nWrote to serial port\n");
-					SerialData.Append(scope $"{(char16)val}");
+					Console.WriteLine("\nWrote to serial port\n");
+					SerialData.Append(scope $"{val}");
 					IOregisters[address - IO_REGISTERS_BEGIN] = val;//ToDo: Serial
 				case 0xFF02:
 					IOregisters[address - IO_REGISTERS_BEGIN] = val;//ToDo: Serial
@@ -241,19 +246,21 @@ namespace BeefBoy.Emu
 				case 0xFF0F:
 					cpu.interrupts.curInterrupt.enable = val;
 				case 0xFF40:
-					gpu.control = val;
+					ppu.control = val;
 				case 0xFF41:
-					gpu.scrollY = val;
+					ppu.scrollY = val;
 				case 0xFF42:
-					gpu.scrollX = val;
+					ppu.scrollX = val;
 				case 0xFF44:
 					copy(0xfe00, (uint16)val << 8, 160);
 				case 0xFF47:
-					for (uint i = 0; i < 4; i++) gpu.backgroundPalette[i] = display.PALETTE[(val >> (i * 2)) & 3];
+					for (int i = 0; i < 4; i++)
+						ppu.backgroundPalette[i] = display.PALETTE[(val >> (i * 2))&3];
+					
 				case 0xFF48:
-					for (uint i = 0; i < 4; i++) gpu.spritePalette[0][i] = display.PALETTE[(val >> (i * 2)) & 3];
+					for (uint i = 0; i < 4; i++) ppu.spritePalette[0][i] = display.PALETTE[(val >> (i * 2)) & 3];
 				case 0xFF49:
-					for (uint i = 0; i < 4; i++) gpu.spritePalette[1][i] = display.PALETTE[(val >> (i * 2)) & 3];
+					for (uint i = 0; i < 4; i++) ppu.spritePalette[1][i] = display.PALETTE[(val >> (i * 2)) & 3];
 				}
 			case when address >= ZERO_PAGE_BEGIN && address <= ZERO_PAGE_END:
 				zeropage[address - ZERO_PAGE_BEGIN] = 0;
@@ -287,12 +294,55 @@ namespace BeefBoy.Emu
 		public void load_ROM(uint8[] romData, bool isLoadingBootROM=false)
 		{
 			Console.WriteLine(romData.Count);
-			//Do not load bootrom currently. Will error.
 			if(!isLoadingBootROM){
 				for (uint16 i = ROM_BANK_0_BEGIN; i < ROM_BANK_N_END; i++)
 				{
 					write_ram_area(i, romData[i], true);
 				}
+				//Setup RAM and registers with the values that they would be after the boot ROM
+				cpu.registers.a = 0x01;
+				cpu.registers.flags = 0xb0;
+				cpu.registers.b = 0x00;
+				cpu.registers.c = 0x13;
+				cpu.registers.d = 0x00;
+				cpu.registers.e = 0xd8;
+				cpu.registers.h = 0x01;
+				cpu.registers.l = 0x4d;
+				cpu.registers.sp = 0xfffe;
+				cpu.registers.pc = 0x100;
+				cpu.ticks=0;
+
+				this[0xFF05]=0;
+				this[0xFF06]=0;
+				this[0xFF07]=0;
+				this[0xFF10]=0x80;
+				this[0xFF11]=0xBF;
+				this[0xFF12]=0xF3;
+				this[0xFF14]=0xBF;
+				this[0xFF16]=0x3F;
+				this[0xFF17]=0x00;
+				this[0xFF19]=0xBF;
+				this[0xFF1A]=0x7A;
+				this[0xFF1B]=0xFF;
+				this[0xFF1C]=0x9F;
+				this[0xFF1E]=0xBF;
+				this[0xFF20]=0xFF;
+				this[0xFF21]=0x00;
+				this[0xFF22]=0x00;
+				this[0xFF23]=0xBF;
+				this[0xFF24]=0x77;
+				this[0xFF25]=0xF3;
+				this[0xFF26]=0xF1;
+				this[0xFF40]=0x91;
+				this[0xFF42]=0x00;
+				this[0xFF43]=0x00;
+				this[0xFF45]=0x00;
+				this[0xFF47]=0xFC;
+				this[0xFF48]=0xFF;
+				this[0xFF49]=0xFF;
+				this[0xFF4A]=0x00;
+				this[0xFF4B]=0x00;
+				this[0xFFFF]=0x00;
 			}
 			else{
 				for (uint16 i = BOOT_ROM_BEGIN; i < BOOT_ROM_END; i++)

@@ -74,7 +74,7 @@ namespace BeefBoy
 			delete (ROMData.Value);
 		}
 		public static BeefBoy.Display display;
-		public static GPU gpu;
+		public static PPU ppu;
 	}
 	class Program
 	{
@@ -83,11 +83,11 @@ namespace BeefBoy
 		{
 			//Use scope. This will unallocate these when they out of scope which will only happen once the program exits.
 			display=scope BeefBoy.Display("BeefBoy",160*6,144*6,.None);
-			gpu=scope GPU();
+
+			ppu=scope PPU();
 			cpu = scope CPU();
-
-			loadROM(@"C:\Beef\BeefBoyRewrite\src\Data\06-ld r,r.gb",false);
-
+			loadROM(@"C:\Beef\BeefBoyRewrite\src\Data\dmg-acid2.gb");
+			
 
 			//Setup command line instructions.
 			/*CowieCLI CLI = scope CowieCLI("BeefBoy", "Emulator for the GB written in beef!");
@@ -96,9 +96,11 @@ namespace BeefBoy
 			CLI.Run(args);*/
 
 			display.Run();
+			while(true){
 
-			//Log(scope $"\n Serial port data(accumulated during run): {SerialData}");
-			//Result<void> result = WriteAllBytes(@"C:\Beef\BeefBoyRewrite\Logs\Log.txt", debugLog);
+			}
+
+			Result<void> result = WriteAllBytes(@"C:\Beef\BeefBoyRewrite\Logs\Log.txt", scope $"\n Serial port data(accumulated during run): {SerialData}");
 			return 0;
 		}
 		[Import("user32.dll"),CLink,StdCall]
