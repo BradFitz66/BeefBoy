@@ -54,7 +54,6 @@ namespace BeefBoy.Emu
 		}
 		void vblank()
 		{
-			//drawFramebuffer();
 			curInterrupt.master=0;
 			cpu.RAM.write_short_to_stack(cpu.registers.pc);
 			cpu.registers.pc=0x40;

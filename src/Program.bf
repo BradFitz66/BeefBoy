@@ -25,11 +25,17 @@ namespace BeefBoy
 
 	static
 	{
+		public static int amountOfLogs=0;
 		public static String debugLog = new $"" ~ delete _;
 
 		public static void Log(String data)
 		{
-			//debugLog.Append(data);
+			amountOfLogs++;
+			debugLog.Append(data);
+			if(amountOfLogs>=16){
+				Result<void> result = WriteAllBytes(@"C:\Beef\BeefBoyRewrite\Logs\Log.txt", debugLog,true);
+				debugLog.Clear();
+			}
 		}
 
 		public static String SerialData=new $"" ~ delete _;
@@ -86,7 +92,7 @@ namespace BeefBoy
 
 			ppu=scope PPU();
 			cpu = scope CPU();
-			loadROM(@"C:\Beef\BeefBoyRewrite\src\Data\dmg-acid2.gb");
+			loadROM(@"C:\Beef\BeefBoyRewrite\src\Data\dmg_boot.bin",true);
 			
 
 			//Setup command line instructions.
@@ -95,12 +101,11 @@ namespace BeefBoy
 			CLI.RegisterCommand<LoadROM>("loadrom");
 			CLI.Run(args);*/
 
+			//Clear log
+			WriteAllBytes(@"C:\Beef\BeefBoyRewrite\Logs\Log.txt", " ",false);
+			//Dump RAM at start
+			WriteAllBytes(@"C:\Beef\BeefBoyRewrite\Logs\Log.txt", " ",false);
 			display.Run();
-			while(true){
-
-			}
-
-			Result<void> result = WriteAllBytes(@"C:\Beef\BeefBoyRewrite\Logs\Log.txt", scope $"\n Serial port data(accumulated during run): {SerialData}");
 			return 0;
 		}
 		[Import("user32.dll"),CLink,StdCall]

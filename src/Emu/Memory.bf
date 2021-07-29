@@ -133,6 +133,12 @@ namespace BeefBoy.Emu
 			return &OAM;
 		}
 
+		public uint8[]* get_vram_space()
+		{
+			return &VRAM;
+		}
+
+		[Inline]
 		uint8 read_ram_area(uint16 address)
 		{
 			switch (address) {
@@ -165,25 +171,42 @@ namespace BeefBoy.Emu
 				//ew ugly nested switch
 				switch (address) {
 				case 0xFF00:
-					return 0;
+					return 0;//ToDo: joypad
 				case 0xFF01:
 					return 0;//ToDo: Serial
 				case 0xFF02:
 					return 0;//ToDo: Serial
 				case 0xFF04:
-					return (uint8)scope Random().NextI32(); //ToDo: Return a div timer
+					return (uint8)scope Random().NextI32();//ToDo: Return a divider, but this will do for games like tetris.
 				case 0xFF40:
-					return ppu.control;
+					return Utils.bitC(ppu.lcd_display_enabled) << 7
+						| Utils.bitC(ppu.window_tile_map == .X9C00) << 6
+						| Utils.bitC(ppu.window_display_enabled) << 5
+						| Utils.bitC(ppu.background_and_window_data_select
+						    == .X8000)
+						    << 4
+						| Utils.bitC(ppu.background_tile_map == .X9C00) << 3
+						| Utils.bitC(ppu.obj_size == .OS8X16) << 2
+						| Utils.bitC(ppu.obj_display_enabled) << 1
+						| Utils.bitC(ppu.background_display_enabled);
+
 				case 0xFF41:
-					return ppu.scrollY;
+					uint8 mode=(uint8)ppu.mode;
+					return 0b10000000
+						|Utils.bitC(ppu.line_equals_line_check_interrupt_enabled)<<6
+						|Utils.bitC(ppu.oam_interrupt_enabled)<<5
+						|Utils.bitC(ppu.vblank_interrupt_enabled)<<4
+						|Utils.bitC(ppu.hblank_interrupt_enabled)<<3
+						|Utils.bitC(ppu.line_equals_line_check)<<2
+						|mode;
 				case 0xFF42:
-					return ppu.scrollX;
+					return ppu.viewport_y_offset;
 				case 0xFF44:
-					return ppu.scanline;
+					return ppu.line;
 				case 0xFF0F:
 					return cpu.interrupts.curInterrupt.flags;
 				default:
-					return IOregisters[address-IO_REGISTERS_BEGIN];
+					return IOregisters[address - IO_REGISTERS_BEGIN];
 				}
 			case when address >= ZERO_PAGE_BEGIN && address <= ZERO_PAGE_END:
 				return zeropage[address - ZERO_PAGE_BEGIN];
@@ -195,7 +218,7 @@ namespace BeefBoy.Emu
 				Internal.FatalError(scope $"Can't find address 0x{address:x4}");
 			}
 		}
-
+		[Inline]
 		void write_ram_area(uint16 address, uint8 val, bool extendedPermissions = false)
 		{
 
@@ -209,12 +232,9 @@ namespace BeefBoy.Emu
 				ROMbankN[address - ROM_BANK_N_BEGIN] = val;
 
 			case when address >= VRAM_BEGIN && address <= VRAM_END:
-				Console.WriteLine(scope $"Writing to VRAM");
-				if (address <= 0x97ff){
-					ppu.updateTile(address, val);
-				}
-				VRAM[address - VRAM_BEGIN] = val;
-				
+				VRAM[address-VRAM_BEGIN] = val;
+				ppu.write_vram(address,val);
+
 			case when address >= EXTERNAL_RAM_BEGIN && address <= EXTERNAL_RAM_END:
 				externalRAM[address - EXTERNAL_RAM_BEGIN] = val;
 
@@ -233,34 +253,55 @@ namespace BeefBoy.Emu
 			case when address >= IO_REGISTERS_BEGIN && address <= IO_REGISTERS_END:
 				switch (address) {
 				case 0xFF00:
-					Console.WriteLine("\nWrote to serial port\n");
-					SerialData.Append(scope $"{val}");
+					//IOregisters[address - IO_REGISTERS_BEGIN] = val;//ToDo
 				case 0xFF01:
-					Console.WriteLine("\nWrote to serial port\n");
-					SerialData.Append(scope $"{val}");
-					IOregisters[address - IO_REGISTERS_BEGIN] = val;//ToDo: Serial
+					//IOregisters[address - IO_REGISTERS_BEGIN] = val;//ToDo
 				case 0xFF02:
-					IOregisters[address - IO_REGISTERS_BEGIN] = val;//ToDo: Serial
+					//IOregisters[address - IO_REGISTERS_BEGIN] = val;//ToDo
 				case 0xFF04:
-					IOregisters[address - IO_REGISTERS_BEGIN] = val;
+					//IOregisters[address - IO_REGISTERS_BEGIN] = val;//ToDo
 				case 0xFF0F:
 					cpu.interrupts.curInterrupt.enable = val;
 				case 0xFF40:
-					ppu.control = val;
+					ppu.lcd_display_enabled = (val >> 7) == 1;
+					ppu.window_tile_map =((val>>6)& 0b1)==1 ? .X9C00 : .X9800;
+
+					ppu.window_display_enabled = ((val >> 5) & 0b1) == 1;
+					ppu.background_and_window_data_select = ((val >> 4) & 0b1) == 1 ? .X8000:.X8800;
+			
+					ppu.background_tile_map = ((val >> 3) & 0b1) == 1 ? .X9C00 : .X9800;
+					ppu.obj_size = ((val >> 2) & 0b1) == 1 ? .OS8X16 : .OS8X8;
+					
+					ppu.obj_display_enabled = ((val >> 1) & 0b1) == 1;
+					ppu.background_display_enabled = (val & 0b1) == 1;
 				case 0xFF41:
-					ppu.scrollY = val;
+					ppu.line_equals_line_check_interrupt_enabled =(val & 0b1000000) == 0b1000000;
+					ppu.oam_interrupt_enabled = (val & 0b100000) == 0b100000;
+					ppu.vblank_interrupt_enabled = (val & 0b10000) == 0b10000;
+					ppu.hblank_interrupt_enabled = (val & 0b1000) == 0b1000;
 				case 0xFF42:
-					ppu.scrollX = val;
+					ppu.viewport_x_offset = val;
 				case 0xFF44:
 					copy(0xfe00, (uint16)val << 8, 160);
 				case 0xFF47:
-					for (int i = 0; i < 4; i++)
-						ppu.backgroundPalette[i] = display.PALETTE[(val >> (i * 2))&3];
-					
+					for (int i = 0; i < 4; i++) ppu.background_colors[i]=val;
 				case 0xFF48:
-					for (uint i = 0; i < 4; i++) ppu.spritePalette[0][i] = display.PALETTE[(val >> (i * 2)) & 3];
+					ppu.obj_0_color_3=(val>>6);
+					ppu.obj_0_color_2=(val>>4)&0b11;
+					ppu.obj_0_color_1=(val>>2)&0b11;
 				case 0xFF49:
-					for (uint i = 0; i < 4; i++) ppu.spritePalette[1][i] = display.PALETTE[(val >> (i * 2)) & 3];
+					ppu.obj_1_color_3=(val>>6);
+					ppu.obj_1_color_2=(val>>4)&0b11;
+					ppu.obj_1_color_1=(val>>2)&0b11;
+				case 0xFF4A:
+					ppu.window.y=val;
+				case 0xFF4B:
+					ppu.window.x=val;
+				case 0xFF50:
+					//Unmap bootrom
+				case 0xFF7F:
+					//Does nothing
+
 				}
 			case when address >= ZERO_PAGE_BEGIN && address <= ZERO_PAGE_END:
 				zeropage[address - ZERO_PAGE_BEGIN] = 0;
@@ -275,12 +316,13 @@ namespace BeefBoy.Emu
 			uint16 i;
 			for (i = 0; i < length; i++) write_byte(destination + i, read_byte(source + i));
 		}
-
+		[Inline]
 		void write_byte(uint16 address, uint8 val)
 		{
 			write_ram_area(address, val);
 		}
 
+		[Inline]
 		uint8 read_byte(uint16 address)
 		{
 			//ToDo: Remove this once GPU emulation is done. This stops the boot ROM from getting stuck.
@@ -288,13 +330,15 @@ namespace BeefBoy.Emu
 			{
 				return 0x90;
 			}
+
 			return read_ram_area(address);
 		}
 
-		public void load_ROM(uint8[] romData, bool isLoadingBootROM=false)
+		public void load_ROM(uint8[] romData, bool isLoadingBootROM = false)
 		{
 			Console.WriteLine(romData.Count);
-			if(!isLoadingBootROM){
+			if (!isLoadingBootROM)
+			{
 				for (uint16 i = ROM_BANK_0_BEGIN; i < ROM_BANK_N_END; i++)
 				{
 					write_ram_area(i, romData[i], true);
@@ -310,41 +354,42 @@ namespace BeefBoy.Emu
 				cpu.registers.l = 0x4d;
 				cpu.registers.sp = 0xfffe;
 				cpu.registers.pc = 0x100;
-				cpu.ticks=0;
+				cpu.ticks = 0;
 
-				this[0xFF05]=0;
-				this[0xFF06]=0;
-				this[0xFF07]=0;
-				this[0xFF10]=0x80;
-				this[0xFF11]=0xBF;
-				this[0xFF12]=0xF3;
-				this[0xFF14]=0xBF;
-				this[0xFF16]=0x3F;
-				this[0xFF17]=0x00;
-				this[0xFF19]=0xBF;
-				this[0xFF1A]=0x7A;
-				this[0xFF1B]=0xFF;
-				this[0xFF1C]=0x9F;
-				this[0xFF1E]=0xBF;
-				this[0xFF20]=0xFF;
-				this[0xFF21]=0x00;
-				this[0xFF22]=0x00;
-				this[0xFF23]=0xBF;
-				this[0xFF24]=0x77;
-				this[0xFF25]=0xF3;
-				this[0xFF26]=0xF1;
-				this[0xFF40]=0x91;
-				this[0xFF42]=0x00;
-				this[0xFF43]=0x00;
-				this[0xFF45]=0x00;
-				this[0xFF47]=0xFC;
-				this[0xFF48]=0xFF;
-				this[0xFF49]=0xFF;
-				this[0xFF4A]=0x00;
-				this[0xFF4B]=0x00;
-				this[0xFFFF]=0x00;
+				this[0xFF05] = 0;
+				this[0xFF06] = 0;
+				this[0xFF07] = 0;
+				this[0xFF10] = 0x80;
+				this[0xFF11] = 0xBF;
+				this[0xFF12] = 0xF3;
+				this[0xFF14] = 0xBF;
+				this[0xFF16] = 0x3F;
+				this[0xFF17] = 0x00;
+				this[0xFF19] = 0xBF;
+				this[0xFF1A] = 0x7A;
+				this[0xFF1B] = 0xFF;
+				this[0xFF1C] = 0x9F;
+				this[0xFF1E] = 0xBF;
+				this[0xFF20] = 0xFF;
+				this[0xFF21] = 0x00;
+				this[0xFF22] = 0x00;
+				this[0xFF23] = 0xBF;
+				this[0xFF24] = 0x77;
+				this[0xFF25] = 0xF3;
+				this[0xFF26] = 0xF1;
+				this[0xFF40] = 0x91;
+				this[0xFF42] = 0x00;
+				this[0xFF43] = 0x00;
+				this[0xFF45] = 0x00;
+				this[0xFF47] = 0xFC;
+				this[0xFF48] = 0xFF;
+				this[0xFF49] = 0xFF;
+				this[0xFF4A] = 0x00;
+				this[0xFF4B] = 0x00;
+				this[0xFFFF] = 0x00;
 			}
-			else{
+			else
+			{
 				for (uint16 i = BOOT_ROM_BEGIN; i < BOOT_ROM_END; i++)
 				{
 					write_ram_area(i, romData[i], true);

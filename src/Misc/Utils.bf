@@ -18,6 +18,10 @@ public static class Utils
 		setFlags(z,n,hc,c);
 	}
 
+	public static uint8 bitC(bool cond){
+		return cond ? 1 : 0;
+	}
+
 	public static void cp(uint8 value){
 		uint8 z,n,hc,c;
 		z=0;

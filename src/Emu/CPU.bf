@@ -1,4 +1,5 @@
 using System;
+
 using System.Collections;
 
 using BeefBoy.Emu.Instructions;
@@ -392,26 +393,6 @@ namespace BeefBoy.Emu
 			registers.pc=0;
 			registers.sp=0;
 
-			ppu.backgroundPalette[0] = display.PALETTE [0];
-			ppu.backgroundPalette[1] = display.PALETTE[1];
-			ppu.backgroundPalette[2] = display.PALETTE[2];
-			ppu.backgroundPalette[3] = display.PALETTE[3];
-
-			ppu.spritePalette[0][0] = display.PALETTE[0];
-			ppu.spritePalette[0][1] = display.PALETTE[1];
-			ppu.spritePalette[0][2] = display.PALETTE[2];
-			ppu.spritePalette[0][3] = display.PALETTE[3];
-
-			ppu.spritePalette[1][0] = display.PALETTE[0];
-			ppu.spritePalette[1][1] = display.PALETTE[1];
-			ppu.spritePalette[1][2] = display.PALETTE[2];
-			ppu.spritePalette[1][3] = display.PALETTE[3];
-
-			ppu.control = 0;
-			ppu.scrollX = 0;
-			ppu.scrollY = 0;
-			ppu.scanline = 0;
-			ppu.tick = 0;
 
 			ticks=0;
 			stopped=false;
@@ -420,20 +401,6 @@ namespace BeefBoy.Emu
 
 		public this()
 		{
-			ppu.backgroundPalette[0] = display.PALETTE [0];
-			ppu.backgroundPalette[1] = display.PALETTE[1];
-			ppu.backgroundPalette[2] = display.PALETTE[2];
-			ppu.backgroundPalette[3] = display.PALETTE[3];
-
-			ppu.spritePalette[0][0] = display.PALETTE[0];
-			ppu.spritePalette[0][1] = display.PALETTE[1];
-			ppu.spritePalette[0][2] = display.PALETTE[2];
-			ppu.spritePalette[0][3] = display.PALETTE[3];
-
-			ppu.spritePalette[1][0] = display.PALETTE[0];
-			ppu.spritePalette[1][1] = display.PALETTE[1];
-			ppu.spritePalette[1][2] = display.PALETTE[2];
-			ppu.spritePalette[1][3] = display.PALETTE[3];
 
 			RAM = new Memory();
 			interrupts=new Interrupts();
@@ -456,31 +423,32 @@ namespace BeefBoy.Emu
 			if (instructions[i].operandLength == 1) operand = (uint16)cpu.RAM[registers.pc];
 			else if (instructions[i].operandLength == 2) operand = cpu.RAM.read_short(registers.pc);
 
-			//if (i != 0xCB)
-				//Console.WriteLine(scope $"Running instruction {instructions[i].disassembly} (0x{i:x4}) with operand {operand:x4} @ PC = 0x{cpu.registers.pc-1:x4}\n");
+			if (i != 0xCB)
+				Log(scope $"Running instruction {instructions[i].disassembly} (0x{i:x4}) with operand {operand:x4} @ PC = 0x{cpu.registers.pc-1:x4}\n");
 
 
 			String RegisterString=scope $"a = 0x{registers.a:x2} b = 0x{registers.b:x2} c = 0x{registers.c:x2} d = 0x{registers.d:x2} e = 0x{registers.e:x2} h = 0x{registers.h:x2} l = 0x{registers.l:x2} af = 0x{registers.af:x4} bc = 0x{registers.bc:x4} de = 0x{registers.de:x4} hl = 0x{registers.hl:x4} sp = 0x{registers.sp:x4}\n";
 			String Flags=scope $"z = {Utils.getBit(cpu.registers.flags,7)} s = {Utils.getBit(cpu.registers.flags,6)} hc = {Utils.getBit(cpu.registers.flags,5)} c = {Utils.getBit(cpu.registers.flags,4)}\n\n";
 
-			//Console.WriteLine(RegisterString);
-			//Console.WriteLine(Flags);
+			Log(RegisterString);
+			Log(Flags);
 			
 			registers.pc += instructions[i].operandLength;
-
+			
 			switch (instructions[i].operandLength) {
 			case 0:	
-				instructions[i].execute(0, 0);
+				instructions[i].[Inline]execute(0, 0);
 				break;
 			case 1:
-				instructions[i].execute((uint8)operand, 0);
+				instructions[i].[Inline]execute((uint8)operand, 0);
 				break;
 			case 2:
-				instructions[i].execute(0, operand);
+				instructions[i].[Inline]execute(0, operand);
 				break;
 			}
 
 			ticks+=instructionTicks[i];
+			Console.WriteLine(scope $"CPU Ticks: {ticks}");
 		}
 	}
 }
